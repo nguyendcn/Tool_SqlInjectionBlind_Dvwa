@@ -10,11 +10,12 @@ using System.Windows.Forms;
 
 namespace Tool_SqlInjectionBlind_Dvwa
 {
-    public partial class Form1 : Form
+    public partial class frm_ViewHTML : Form
     {
-        public Form1()
+        public frm_ViewHTML(string html)
         {
             InitializeComponent();
+            this.rtxt_ContentHTML.Text = html;
         }
     }
 }
