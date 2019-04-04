@@ -82,6 +82,7 @@ namespace Tool_SqlInjectionBlind_Dvwa
             HtmlElementCollection h = wbro_Brower.Document.GetElementsByTagName("pre");
             if(h.Count != 0)
                 textBox1.Text = h[0].InnerHtml;
+            ////
 
             if(btn_Click)
             {
