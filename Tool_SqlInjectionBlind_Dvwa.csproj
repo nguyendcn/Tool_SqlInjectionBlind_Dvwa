@@ -61,6 +61,7 @@
     <Compile Include="frm_ViewHTML.Designer.cs">
       <DependentUpon>frm_ViewHTML.cs</DependentUpon>
     </Compile>
+    <Compile Include="Handing.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="resour_img.Designer.cs">
@@ -68,6 +69,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>resour_img.resx</DependentUpon>
     </Compile>
+    <Compile Include="ResultRequest.cs" />
+    <Compile Include="Variable.cs" />
     <EmbeddedResource Include="frm_Main.resx">
       <DependentUpon>frm_Main.cs</DependentUpon>
     </EmbeddedResource>
