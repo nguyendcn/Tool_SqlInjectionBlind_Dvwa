@@ -10,7 +10,7 @@ namespace Tool_SqlInjectionBlind_Dvwa
     {
         public enum Result { Exists, Missing, Fail };
         public enum Mode { Number, String};
-        public enum Mode_SQL { DB_Name, TABLES_NAME}
+        public enum Mode_SQL { DB_Name, TABLES_NAME, COLUMNS_NAME}
         public enum Job { Done_ALL, Done_OnePart, Continue, Fail, None}
     }
 }

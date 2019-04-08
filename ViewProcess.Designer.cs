@@ -38,6 +38,7 @@
             this.rtxt_View.Size = new System.Drawing.Size(533, 415);
             this.rtxt_View.TabIndex = 0;
             this.rtxt_View.Text = "";
+            this.rtxt_View.TextChanged += new System.EventHandler(this.rtxt_View_TextChanged);
             // 
             // ViewProcess
             // 
