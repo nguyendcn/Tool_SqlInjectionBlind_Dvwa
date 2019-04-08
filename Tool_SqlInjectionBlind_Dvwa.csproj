@@ -71,6 +71,12 @@
     </Compile>
     <Compile Include="ResultRequest.cs" />
     <Compile Include="Variable.cs" />
+    <Compile Include="ViewProcess.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ViewProcess.Designer.cs">
+      <DependentUpon>ViewProcess.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="frm_Main.resx">
       <DependentUpon>frm_Main.cs</DependentUpon>
     </EmbeddedResource>
@@ -89,6 +95,9 @@
     <EmbeddedResource Include="resour_img.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>resour_img.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewProcess.resx">
+      <DependentUpon>ViewProcess.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
