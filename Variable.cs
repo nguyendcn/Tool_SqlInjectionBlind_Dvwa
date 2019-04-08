@@ -12,7 +12,10 @@ namespace Tool_SqlInjectionBlind_Dvwa
         private static int index_Tables = 0;
         private static List<int> quantity_Columns = new List<int>();
         private static int index_Columns = 0;
+        private static List<int> quantity_Row = new List<int>();
+        private static int index_Rows = 0;
 
+        private static List<List<List<string>>> bd_DataTable = new List<List<List<string>>>();
         private static string db_Name;
         private static List<string> db_TablesName = new List<string>();
         private static List<List<string>> db_ColumnsName = new List<List<string>>();
@@ -105,6 +108,45 @@ namespace Tool_SqlInjectionBlind_Dvwa
             set
             {
                 quantity_Columns = value;
+            }
+        }
+
+        public static List<int> Quantity_Row
+        {
+            get
+            {
+                return quantity_Row;
+            }
+
+            set
+            {
+                quantity_Row = value;
+            }
+        }
+
+        public static List<List<List<string>>> Bd_DataTable
+        {
+            get
+            {
+                return bd_DataTable;
+            }
+
+            set
+            {
+                bd_DataTable = value;
+            }
+        }
+
+        public static int Index_Rows
+        {
+            get
+            {
+                return index_Rows;
+            }
+
+            set
+            {
+                index_Rows = value;
             }
         }
     }

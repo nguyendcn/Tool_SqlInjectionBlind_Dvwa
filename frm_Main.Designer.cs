@@ -52,6 +52,7 @@
             this.cmb_Cols_Name = new System.Windows.Forms.ComboBox();
             this.cmb_TbsName = new System.Windows.Forms.ComboBox();
             this.btn_GetColsName = new System.Windows.Forms.Button();
+            this.clb_ColsName = new System.Windows.Forms.CheckedListBox();
             this.pnl_Header.SuspendLayout();
             this.pnl_Brower.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -158,6 +159,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.clb_ColsName);
             this.panel1.Controls.Add(this.dataGridView1);
             this.panel1.Controls.Add(this.cmb_Tables);
             this.panel1.Controls.Add(this.btn_GetData);
@@ -181,6 +183,7 @@
             this.cmb_Tables.Name = "cmb_Tables";
             this.cmb_Tables.Size = new System.Drawing.Size(107, 21);
             this.cmb_Tables.TabIndex = 14;
+            this.cmb_Tables.SelectedIndexChanged += new System.EventHandler(this.cmb_Tables_SelectedIndexChanged);
             // 
             // btn_GetData
             // 
@@ -190,6 +193,7 @@
             this.btn_GetData.TabIndex = 13;
             this.btn_GetData.Text = "Get Data";
             this.btn_GetData.UseVisualStyleBackColor = true;
+            this.btn_GetData.Click += new System.EventHandler(this.btn_GetData_Click);
             // 
             // pnl_Process
             // 
@@ -288,6 +292,7 @@
             this.cmb_TbsName.Name = "cmb_TbsName";
             this.cmb_TbsName.Size = new System.Drawing.Size(107, 21);
             this.cmb_TbsName.TabIndex = 14;
+            this.cmb_TbsName.SelectedIndexChanged += new System.EventHandler(this.cmb_TbsName_SelectedIndexChanged);
             // 
             // btn_GetColsName
             // 
@@ -298,6 +303,14 @@
             this.btn_GetColsName.Text = "Get cols name";
             this.btn_GetColsName.UseVisualStyleBackColor = true;
             this.btn_GetColsName.Click += new System.EventHandler(this.btn_GetColsName_Click);
+            // 
+            // clb_ColsName
+            // 
+            this.clb_ColsName.FormattingEnabled = true;
+            this.clb_ColsName.Location = new System.Drawing.Point(279, 12);
+            this.clb_ColsName.Name = "clb_ColsName";
+            this.clb_ColsName.Size = new System.Drawing.Size(136, 49);
+            this.clb_ColsName.TabIndex = 16;
             // 
             // frm_Main
             // 
@@ -352,6 +365,7 @@
         private System.Windows.Forms.ComboBox cmb_TbsName;
         private System.Windows.Forms.Button btn_GetColsName;
         private ViewProcess vp;
+        private System.Windows.Forms.CheckedListBox clb_ColsName;
     }
 }
 
