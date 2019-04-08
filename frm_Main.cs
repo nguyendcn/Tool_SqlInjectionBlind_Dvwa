@@ -258,7 +258,7 @@ namespace Tool_SqlInjectionBlind_Dvwa
 
         private void btn_GetColsName_Click(object sender, EventArgs e)
         {
-
+            
         }
     }
 }
