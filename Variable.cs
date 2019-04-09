@@ -14,6 +14,7 @@ namespace Tool_SqlInjectionBlind_Dvwa
         private static int index_Columns = 0;
         private static List<int> quantity_Row = new List<int>();
         private static int index_Rows = 0;
+        private static int index_clb_Show = 0;
 
         private static List<List<List<string>>> bd_DataTable = new List<List<List<string>>>();
         private static string db_Name;
@@ -149,5 +150,7 @@ namespace Tool_SqlInjectionBlind_Dvwa
                 index_Rows = value;
             }
         }
+
+        public static int Index_clb_Show { get => index_clb_Show; set => index_clb_Show = value; }
     }
 }

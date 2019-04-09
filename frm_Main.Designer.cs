@@ -38,7 +38,7 @@
             this.btn_GetDBName = new System.Windows.Forms.Button();
             this.lbl_Result_DBName = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.clb_ColsName = new System.Windows.Forms.CheckedListBox();
             this.cmb_Tables = new System.Windows.Forms.ComboBox();
             this.btn_GetData = new System.Windows.Forms.Button();
             this.pnl_Process = new System.Windows.Forms.Panel();
@@ -52,14 +52,14 @@
             this.cmb_Cols_Name = new System.Windows.Forms.ComboBox();
             this.cmb_TbsName = new System.Windows.Forms.ComboBox();
             this.btn_GetColsName = new System.Windows.Forms.Button();
-            this.clb_ColsName = new System.Windows.Forms.CheckedListBox();
+            this.dgv_Data = new System.Windows.Forms.DataGridView();
             this.pnl_Header.SuspendLayout();
             this.pnl_Brower.SuspendLayout();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.pnl_Process.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_Data)).BeginInit();
             this.SuspendLayout();
             // 
             // pnl_Header
@@ -69,7 +69,7 @@
             this.pnl_Header.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnl_Header.Location = new System.Drawing.Point(0, 0);
             this.pnl_Header.Name = "pnl_Header";
-            this.pnl_Header.Size = new System.Drawing.Size(1011, 33);
+            this.pnl_Header.Size = new System.Drawing.Size(1023, 33);
             this.pnl_Header.TabIndex = 0;
             this.pnl_Header.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pnl_Header_MouseDown);
             // 
@@ -96,7 +96,7 @@
             this.pnl_Brower.Dock = System.Windows.Forms.DockStyle.Left;
             this.pnl_Brower.Location = new System.Drawing.Point(0, 33);
             this.pnl_Brower.Name = "pnl_Brower";
-            this.pnl_Brower.Size = new System.Drawing.Size(535, 586);
+            this.pnl_Brower.Size = new System.Drawing.Size(535, 642);
             this.pnl_Brower.TabIndex = 1;
             // 
             // wbro_Brower
@@ -159,22 +159,22 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.dgv_Data);
             this.panel1.Controls.Add(this.clb_ColsName);
-            this.panel1.Controls.Add(this.dataGridView1);
             this.panel1.Controls.Add(this.cmb_Tables);
             this.panel1.Controls.Add(this.btn_GetData);
             this.panel1.Location = new System.Drawing.Point(3, 237);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(470, 349);
+            this.panel1.Size = new System.Drawing.Size(470, 402);
             this.panel1.TabIndex = 10;
             // 
-            // dataGridView1
+            // clb_ColsName
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(7, 63);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(458, 283);
-            this.dataGridView1.TabIndex = 15;
+            this.clb_ColsName.FormattingEnabled = true;
+            this.clb_ColsName.Location = new System.Drawing.Point(279, 12);
+            this.clb_ColsName.Name = "clb_ColsName";
+            this.clb_ColsName.Size = new System.Drawing.Size(136, 49);
+            this.clb_ColsName.TabIndex = 16;
             // 
             // cmb_Tables
             // 
@@ -204,9 +204,9 @@
             this.pnl_Process.Controls.Add(this.btn_GetDBName);
             this.pnl_Process.Controls.Add(this.btn_ViewHTHL);
             this.pnl_Process.Dock = System.Windows.Forms.DockStyle.Right;
-            this.pnl_Process.Location = new System.Drawing.Point(535, 33);
+            this.pnl_Process.Location = new System.Drawing.Point(547, 33);
             this.pnl_Process.Name = "pnl_Process";
-            this.pnl_Process.Size = new System.Drawing.Size(476, 586);
+            this.pnl_Process.Size = new System.Drawing.Size(476, 642);
             this.pnl_Process.TabIndex = 2;
             // 
             // panel3
@@ -304,19 +304,22 @@
             this.btn_GetColsName.UseVisualStyleBackColor = true;
             this.btn_GetColsName.Click += new System.EventHandler(this.btn_GetColsName_Click);
             // 
-            // clb_ColsName
+            // dgv_Data
             // 
-            this.clb_ColsName.FormattingEnabled = true;
-            this.clb_ColsName.Location = new System.Drawing.Point(279, 12);
-            this.clb_ColsName.Name = "clb_ColsName";
-            this.clb_ColsName.Size = new System.Drawing.Size(136, 49);
-            this.clb_ColsName.TabIndex = 16;
+            this.dgv_Data.AllowUserToAddRows = false;
+            this.dgv_Data.AllowUserToDeleteRows = false;
+            this.dgv_Data.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgv_Data.Location = new System.Drawing.Point(3, 71);
+            this.dgv_Data.Name = "dgv_Data";
+            this.dgv_Data.ReadOnly = true;
+            this.dgv_Data.Size = new System.Drawing.Size(467, 331);
+            this.dgv_Data.TabIndex = 17;
             // 
             // frm_Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1011, 619);
+            this.ClientSize = new System.Drawing.Size(1023, 675);
             this.Controls.Add(this.pnl_Process);
             this.Controls.Add(this.pnl_Brower);
             this.Controls.Add(this.pnl_Header);
@@ -327,13 +330,13 @@
             this.pnl_Brower.ResumeLayout(false);
             this.pnl_Brower.PerformLayout();
             this.panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.pnl_Process.ResumeLayout(false);
             this.pnl_Process.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_Data)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -350,7 +353,6 @@
         private System.Windows.Forms.Button btn_GetDBName;
         private System.Windows.Forms.Label lbl_Result_DBName;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.ComboBox cmb_Tables;
         private System.Windows.Forms.Button btn_GetData;
         private System.Windows.Forms.Panel pnl_Process;
@@ -366,6 +368,7 @@
         private System.Windows.Forms.Button btn_GetColsName;
         private ViewProcess vp;
         private System.Windows.Forms.CheckedListBox clb_ColsName;
+        private System.Windows.Forms.DataGridView dgv_Data;
     }
 }
 
