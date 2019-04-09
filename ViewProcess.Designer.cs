@@ -33,9 +33,11 @@
             // 
             // rtxt_View
             // 
-            this.rtxt_View.Location = new System.Drawing.Point(12, 25);
+            this.rtxt_View.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtxt_View.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rtxt_View.Location = new System.Drawing.Point(0, 0);
             this.rtxt_View.Name = "rtxt_View";
-            this.rtxt_View.Size = new System.Drawing.Size(533, 415);
+            this.rtxt_View.Size = new System.Drawing.Size(557, 452);
             this.rtxt_View.TabIndex = 0;
             this.rtxt_View.Text = "";
             this.rtxt_View.TextChanged += new System.EventHandler(this.rtxt_View_TextChanged);

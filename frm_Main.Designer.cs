@@ -38,10 +38,14 @@
             this.btn_GetDBName = new System.Windows.Forms.Button();
             this.lbl_Result_DBName = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.dgv_Data = new System.Windows.Forms.DataGridView();
             this.clb_ColsName = new System.Windows.Forms.CheckedListBox();
             this.cmb_Tables = new System.Windows.Forms.ComboBox();
             this.btn_GetData = new System.Windows.Forms.Button();
             this.pnl_Process = new System.Windows.Forms.Panel();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.txt_CyperText = new System.Windows.Forms.TextBox();
+            this.btn_MD5 = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
             this.lbl_Count_TBsName = new System.Windows.Forms.Label();
             this.lbl_TBsName = new System.Windows.Forms.Label();
@@ -52,14 +56,14 @@
             this.cmb_Cols_Name = new System.Windows.Forms.ComboBox();
             this.cmb_TbsName = new System.Windows.Forms.ComboBox();
             this.btn_GetColsName = new System.Windows.Forms.Button();
-            this.dgv_Data = new System.Windows.Forms.DataGridView();
             this.pnl_Header.SuspendLayout();
             this.pnl_Brower.SuspendLayout();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_Data)).BeginInit();
             this.pnl_Process.SuspendLayout();
+            this.panel4.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_Data)).BeginInit();
             this.SuspendLayout();
             // 
             // pnl_Header
@@ -104,7 +108,7 @@
             this.wbro_Brower.Location = new System.Drawing.Point(3, 32);
             this.wbro_Brower.MinimumSize = new System.Drawing.Size(20, 20);
             this.wbro_Brower.Name = "wbro_Brower";
-            this.wbro_Brower.Size = new System.Drawing.Size(528, 554);
+            this.wbro_Brower.Size = new System.Drawing.Size(528, 609);
             this.wbro_Brower.TabIndex = 2;
             this.wbro_Brower.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.wbro_Brower_DocumentCompleted);
             // 
@@ -129,9 +133,9 @@
             // 
             this.btn_ViewHTHL.FlatAppearance.BorderSize = 0;
             this.btn_ViewHTHL.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_ViewHTHL.Location = new System.Drawing.Point(14, 7);
+            this.btn_ViewHTHL.Location = new System.Drawing.Point(3, 3);
             this.btn_ViewHTHL.Name = "btn_ViewHTHL";
-            this.btn_ViewHTHL.Size = new System.Drawing.Size(57, 43);
+            this.btn_ViewHTHL.Size = new System.Drawing.Size(78, 39);
             this.btn_ViewHTHL.TabIndex = 0;
             this.btn_ViewHTHL.Text = "View HTML";
             this.btn_ViewHTHL.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -151,9 +155,10 @@
             // lbl_Result_DBName
             // 
             this.lbl_Result_DBName.AutoSize = true;
-            this.lbl_Result_DBName.Location = new System.Drawing.Point(114, 65);
+            this.lbl_Result_DBName.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_Result_DBName.Location = new System.Drawing.Point(122, 65);
             this.lbl_Result_DBName.Name = "lbl_Result_DBName";
-            this.lbl_Result_DBName.Size = new System.Drawing.Size(40, 13);
+            this.lbl_Result_DBName.Size = new System.Drawing.Size(49, 19);
             this.lbl_Result_DBName.TabIndex = 3;
             this.lbl_Result_DBName.Text = "Result:";
             // 
@@ -168,20 +173,33 @@
             this.panel1.Size = new System.Drawing.Size(470, 402);
             this.panel1.TabIndex = 10;
             // 
+            // dgv_Data
+            // 
+            this.dgv_Data.AllowUserToAddRows = false;
+            this.dgv_Data.AllowUserToDeleteRows = false;
+            this.dgv_Data.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgv_Data.Location = new System.Drawing.Point(3, 71);
+            this.dgv_Data.Name = "dgv_Data";
+            this.dgv_Data.ReadOnly = true;
+            this.dgv_Data.Size = new System.Drawing.Size(467, 331);
+            this.dgv_Data.TabIndex = 17;
+            // 
             // clb_ColsName
             // 
+            this.clb_ColsName.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.clb_ColsName.FormattingEnabled = true;
-            this.clb_ColsName.Location = new System.Drawing.Point(279, 12);
+            this.clb_ColsName.Location = new System.Drawing.Point(292, 12);
             this.clb_ColsName.Name = "clb_ColsName";
             this.clb_ColsName.Size = new System.Drawing.Size(136, 49);
             this.clb_ColsName.TabIndex = 16;
             // 
             // cmb_Tables
             // 
+            this.cmb_Tables.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmb_Tables.FormattingEnabled = true;
             this.cmb_Tables.Location = new System.Drawing.Point(140, 12);
             this.cmb_Tables.Name = "cmb_Tables";
-            this.cmb_Tables.Size = new System.Drawing.Size(107, 21);
+            this.cmb_Tables.Size = new System.Drawing.Size(107, 27);
             this.cmb_Tables.TabIndex = 14;
             this.cmb_Tables.SelectedIndexChanged += new System.EventHandler(this.cmb_Tables_SelectedIndexChanged);
             // 
@@ -197,17 +215,46 @@
             // 
             // pnl_Process
             // 
+            this.pnl_Process.Controls.Add(this.panel4);
             this.pnl_Process.Controls.Add(this.panel3);
             this.pnl_Process.Controls.Add(this.panel2);
             this.pnl_Process.Controls.Add(this.panel1);
             this.pnl_Process.Controls.Add(this.lbl_Result_DBName);
             this.pnl_Process.Controls.Add(this.btn_GetDBName);
-            this.pnl_Process.Controls.Add(this.btn_ViewHTHL);
             this.pnl_Process.Dock = System.Windows.Forms.DockStyle.Right;
             this.pnl_Process.Location = new System.Drawing.Point(547, 33);
             this.pnl_Process.Name = "pnl_Process";
             this.pnl_Process.Size = new System.Drawing.Size(476, 642);
             this.pnl_Process.TabIndex = 2;
+            // 
+            // panel4
+            // 
+            this.panel4.Controls.Add(this.txt_CyperText);
+            this.panel4.Controls.Add(this.btn_MD5);
+            this.panel4.Controls.Add(this.btn_ViewHTHL);
+            this.panel4.Location = new System.Drawing.Point(6, 7);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(467, 45);
+            this.panel4.TabIndex = 13;
+            // 
+            // txt_CyperText
+            // 
+            this.txt_CyperText.Location = new System.Drawing.Point(312, 13);
+            this.txt_CyperText.Name = "txt_CyperText";
+            this.txt_CyperText.Size = new System.Drawing.Size(100, 20);
+            this.txt_CyperText.TabIndex = 2;
+            // 
+            // btn_MD5
+            // 
+            this.btn_MD5.FlatAppearance.BorderSize = 0;
+            this.btn_MD5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_MD5.Location = new System.Drawing.Point(418, 3);
+            this.btn_MD5.Name = "btn_MD5";
+            this.btn_MD5.Size = new System.Drawing.Size(40, 39);
+            this.btn_MD5.TabIndex = 1;
+            this.btn_MD5.Text = "MD5";
+            this.btn_MD5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btn_MD5.UseVisualStyleBackColor = true;
             // 
             // panel3
             // 
@@ -222,18 +269,20 @@
             // lbl_Count_TBsName
             // 
             this.lbl_Count_TBsName.AutoSize = true;
-            this.lbl_Count_TBsName.Location = new System.Drawing.Point(116, 8);
+            this.lbl_Count_TBsName.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_Count_TBsName.Location = new System.Drawing.Point(116, 6);
             this.lbl_Count_TBsName.Name = "lbl_Count_TBsName";
-            this.lbl_Count_TBsName.Size = new System.Drawing.Size(38, 13);
+            this.lbl_Count_TBsName.Size = new System.Drawing.Size(49, 19);
             this.lbl_Count_TBsName.TabIndex = 9;
             this.lbl_Count_TBsName.Text = "Count:";
             // 
             // lbl_TBsName
             // 
             this.lbl_TBsName.AutoSize = true;
+            this.lbl_TBsName.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_TBsName.Location = new System.Drawing.Point(116, 26);
             this.lbl_TBsName.Name = "lbl_TBsName";
-            this.lbl_TBsName.Size = new System.Drawing.Size(40, 13);
+            this.lbl_TBsName.Size = new System.Drawing.Size(49, 19);
             this.lbl_TBsName.TabIndex = 8;
             this.lbl_TBsName.Text = "Result:";
             // 
@@ -262,35 +311,42 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(289, 31);
+            this.label2.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(282, 32);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(47, 13);
+            this.label2.Size = new System.Drawing.Size(62, 19);
             this.label2.TabIndex = 17;
             this.label2.Text = "Columns";
+            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(108, 31);
+            this.label1.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(104, 29);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(39, 13);
+            this.label1.Size = new System.Drawing.Size(48, 19);
             this.label1.TabIndex = 16;
             this.label1.Text = "Tables";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // cmb_Cols_Name
             // 
+            this.cmb_Cols_Name.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmb_Cols_Name.FormattingEnabled = true;
-            this.cmb_Cols_Name.Location = new System.Drawing.Point(341, 28);
+            this.cmb_Cols_Name.Location = new System.Drawing.Point(350, 26);
             this.cmb_Cols_Name.Name = "cmb_Cols_Name";
-            this.cmb_Cols_Name.Size = new System.Drawing.Size(108, 21);
+            this.cmb_Cols_Name.Size = new System.Drawing.Size(108, 27);
             this.cmb_Cols_Name.TabIndex = 15;
+            this.cmb_Cols_Name.SelectedIndexChanged += new System.EventHandler(this.cmb_Cols_Name_SelectedIndexChanged);
             // 
             // cmb_TbsName
             // 
+            this.cmb_TbsName.Font = new System.Drawing.Font("Times New Roman", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmb_TbsName.FormattingEnabled = true;
-            this.cmb_TbsName.Location = new System.Drawing.Point(149, 28);
+            this.cmb_TbsName.Location = new System.Drawing.Point(158, 26);
             this.cmb_TbsName.Name = "cmb_TbsName";
-            this.cmb_TbsName.Size = new System.Drawing.Size(107, 21);
+            this.cmb_TbsName.Size = new System.Drawing.Size(107, 27);
             this.cmb_TbsName.TabIndex = 14;
             this.cmb_TbsName.SelectedIndexChanged += new System.EventHandler(this.cmb_TbsName_SelectedIndexChanged);
             // 
@@ -303,17 +359,6 @@
             this.btn_GetColsName.Text = "Get cols name";
             this.btn_GetColsName.UseVisualStyleBackColor = true;
             this.btn_GetColsName.Click += new System.EventHandler(this.btn_GetColsName_Click);
-            // 
-            // dgv_Data
-            // 
-            this.dgv_Data.AllowUserToAddRows = false;
-            this.dgv_Data.AllowUserToDeleteRows = false;
-            this.dgv_Data.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgv_Data.Location = new System.Drawing.Point(3, 71);
-            this.dgv_Data.Name = "dgv_Data";
-            this.dgv_Data.ReadOnly = true;
-            this.dgv_Data.Size = new System.Drawing.Size(467, 331);
-            this.dgv_Data.TabIndex = 17;
             // 
             // frm_Main
             // 
@@ -330,13 +375,15 @@
             this.pnl_Brower.ResumeLayout(false);
             this.pnl_Brower.PerformLayout();
             this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_Data)).EndInit();
             this.pnl_Process.ResumeLayout(false);
             this.pnl_Process.PerformLayout();
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_Data)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -369,6 +416,9 @@
         private ViewProcess vp;
         private System.Windows.Forms.CheckedListBox clb_ColsName;
         private System.Windows.Forms.DataGridView dgv_Data;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.TextBox txt_CyperText;
+        private System.Windows.Forms.Button btn_MD5;
     }
 }
 

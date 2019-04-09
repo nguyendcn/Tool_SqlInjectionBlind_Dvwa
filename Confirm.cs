@@ -10,8 +10,11 @@ namespace Tool_SqlInjectionBlind_Dvwa
     {
         private static bool is_Click_btnGNameColumns = false;
         private static bool is_Click_btnGetData = false;
+        private static bool is_Click_btnGNameTables = false;
+        private static bool is_Click_btnGDatabaseName = false;
         private static bool find_Quantity_Done = false;
         private static List<bool> find_Quantity_Row_Done = new List<bool>();
+        private static bool count_Tables_Done = false;
 
         public static bool Is_Click_btnGNameColumns
         {
@@ -64,5 +67,9 @@ namespace Tool_SqlInjectionBlind_Dvwa
                 find_Quantity_Row_Done = value;
             }
         }
+
+        public static bool Is_Click_btnGNameTables { get => is_Click_btnGNameTables; set => is_Click_btnGNameTables = value; }
+        public static bool Is_Click_btnGDatabaseName { get => is_Click_btnGDatabaseName; set => is_Click_btnGDatabaseName = value; }
+        public static bool Count_Tables_Done { get => count_Tables_Done; set => count_Tables_Done = value; }
     }
 }

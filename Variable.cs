@@ -16,6 +16,13 @@ namespace Tool_SqlInjectionBlind_Dvwa
         private static int index_Rows = 0;
         private static int index_clb_Show = 0;
 
+        private static int left = 0;
+        private static int mid = 127;
+        private static int right = 255;
+        private static int index_str = 0;
+        private static string str_result = "";
+        private static string sql_Request = "";
+
         private static List<List<List<string>>> bd_DataTable = new List<List<List<string>>>();
         private static string db_Name;
         private static List<string> db_TablesName = new List<string>();
@@ -152,5 +159,36 @@ namespace Tool_SqlInjectionBlind_Dvwa
         }
 
         public static int Index_clb_Show { get => index_clb_Show; set => index_clb_Show = value; }
+        public static int Left { get => left; set => left = value; }
+        public static int Mid { get => mid; set => mid = value; }
+        public static int Right { get => right; set => right = value; }
+        public static int Index_str { get => index_str; set => index_str = value; }
+        public static string Sql_Request { get => sql_Request; set => sql_Request = value; }
+        public static string Str_result { get => str_result; set => str_result = value; }
+
+        public static void Reset_Data_Variable()
+        {
+            Left = 0;
+            Mid = 127;
+            Right = 255;
+            Str_result = "";
+            Index_str = 0;
+        }
+
+        public static void Get_Data_Variable(ref int left, ref int mid, ref int right, ref int index, ref string str_result, ref string sql)
+        {
+            left = Variable.Left; mid = Variable.Mid; right = Variable.Right; index = Variable.Index_str;
+            str_result = Variable.Str_result; sql = Variable.Sql_Request;
+        }
+
+        public static void Set_Data_Variable(int left, int mid, int right, int index, string str_result, string sql)
+        {
+            Variable.Sql_Request = sql;
+            Variable.Left = left;
+            Variable.Mid = mid;
+            Variable.Right = right;
+            Variable.Str_result = str_result;
+            Variable.Index_str = index;
+        }
     }
 }

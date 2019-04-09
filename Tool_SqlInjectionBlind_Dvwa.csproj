@@ -63,6 +63,7 @@
       <DependentUpon>frm_ViewHTML.cs</DependentUpon>
     </Compile>
     <Compile Include="Handing.cs" />
+    <Compile Include="MD5Crypt.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="resour_img.Designer.cs">
